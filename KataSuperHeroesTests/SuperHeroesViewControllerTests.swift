@@ -26,6 +26,25 @@ class SuperHeroesViewControllerTests: AcceptanceTestCase {
         expect(emptyCaseText.text).to(equal("¯\\_(ツ)_/¯"))
     }
 
+    func testShowsSuperHeroesIfThereAreSuperHeroes() {
+        let totalSuperHeroes = 10
+        givenThereAreSomeSuperHeroes(totalSuperHeroes, avengers: true)
+
+        openSuperHeroesViewController()
+
+        let tableView = tester().waitForViewWithAccessibilityLabel("SuperHeroesTableView") as! UITableView
+        expect(tableView.numberOfRowsInSection(0)).to(equal(totalSuperHeroes))
+
+
+        for i in 0..<totalSuperHeroes {
+            let name = repository.superHeroes[i].name
+            let cell = tester().waitForViewWithAccessibilityLabel(name) as! SuperHeroTableViewCell
+            expect(cell.nameLabel.text).to(equal(name))
+        }
+
+    }
+
+
     private func givenThereAreNoSuperHeroes() {
         givenThereAreSomeSuperHeroes(0)
     }
@@ -52,4 +71,5 @@ class SuperHeroesViewControllerTests: AcceptanceTestCase {
         rootViewController.viewControllers = [superHeroesViewController]
         presentViewController(rootViewController)
     }
+
 }
